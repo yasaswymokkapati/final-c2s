@@ -8,6 +8,8 @@ import Book from './screens/books';
 import Clothes from './screens/clothes';
 import Groceries from './screens/groceries';
 import Medicines from './screens/medicines';
+import LoginScreen from './screens/LoginScreen';
+import SignupScreen from './screens/SignupScreen';
 
 export default class App extends React.Component {
   render() {
@@ -19,6 +21,8 @@ export default class App extends React.Component {
   }
 }
 var AppNavigator = createSwitchNavigator({
+  Signup : SignupScreen,
+  Login : LoginScreen,
   Main: Main,
   Food: Food,
   Groceries: Groceries,

@@ -3,28 +3,25 @@ import { View, StyleSheet, Text, Image, TouchableOpacity,TextInput, Alert } from
 import db from '../config';
 import firebase from 'firebase';
 
-export default class WelcomeScreen extends Component {
+export default class SignupScreen extends Component {
   constructor(){
     super()
     this.state={
       emailId : '',
-      password: ''
+      password: '',
+      confirmPassword : '',
+      firstName : '',
+      lastName : ''
     }
   }
 
-  userLogin = (emailId, password)=>{
-    firebase.auth().signInWithEmailAndPassword(emailId, password)
-    .then(()=>{
-      return Alert.alert("Successfully Login")
-    })
-    .catch((error)=> {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      return Alert.alert(errorMessage)
-    })
-  }
+  
 
-  userSignUp = (emailId, password) =>{
+  userSignUp = (emailId, password, confirmPassword) =>{
+    if(password != confirmPassword){
+      return Alert.alert('Password mismatch')
+    }
+    else{
     firebase.auth().createUserWithEmailAndPassword(emailId, password)
     .then((response)=>{
       return Alert.alert("User Added Successfully")
@@ -36,15 +33,35 @@ export default class WelcomeScreen extends Component {
       return Alert.alert(errorMessage)
     });
   }
+  }
 
 
   render(){
     return(
       <View style={styles.container}>
-          <SantaAnimation/>
-          <Text style={styles.title}>Care 2 Share</Text>
-        <View style={styles.buttonContainer}>
-          <TextInput
+        <TextInput
+          style={styles.loginBox}
+          placeholder="First Name"
+          placeholderTextColor = "#ffff"
+          onChangeText={(text)=>{
+            this.setState({
+              firstName: text
+            })
+          }}
+        />
+
+        <TextInput
+          style={styles.loginBox}
+          secureTextEntry = {true}
+          placeholder="Last Name"
+          placeholderTextColor = "#ffff"
+          onChangeText={(text)=>{
+            this.setState({
+              lastName: text
+            })
+          }}
+        />
+        <TextInput
           style={styles.loginBox}
           placeholder="IloveSharing@example.com"
           placeholderTextColor = "#ffff"
@@ -67,19 +84,26 @@ export default class WelcomeScreen extends Component {
             })
           }}
         />
-          <TouchableOpacity
-            style={[styles.button,{marginBottom:20, marginTop:20}]}
-            onPress = {()=>{this.userLogin(this.state.emailId, this.state.password)}}
-            >
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
+        <TextInput
+          style={styles.loginBox}
+          placeholder="confirm password"
+          placeholderTextColor = "#ffff"
+          secureTextEntry = {true}
+          onChangeText={(text)=>{
+            this.setState({
+              confirmPassword: text
+            })
+          }}
+        />
           <TouchableOpacity
             style={styles.button}
-            onPress={()=>{this.userSignUp(this.state.emailId, this.state.password)}}
+            onPress={()=>{
+              this.userSignUp(this.state.emailId, this.state.password, this.state.confirmPassword)
+              this.props.navigation.navigate('Login')
+            }}
             >
             <Text style={styles.buttonText}>SignUp</Text>
           </TouchableOpacity>
-        </View>
       </View>
     )
   }
